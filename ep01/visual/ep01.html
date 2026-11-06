@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>STILL OPEN · EP01</title>
+<style>
+@font-face{font-family:'Instrument Serif';font-style:normal;src:url(fonts/InstrumentSerif-normal-400.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;src:url(fonts/InstrumentSerif-italic-400.woff2) format('woff2')}
+@font-face{font-family:'InterV';font-weight:100 900;src:url(fonts/Inter-var.woff2) format('woff2')}
+html,body{margin:0;background:#000;color:#ccc;font:13px system-ui}
+canvas{display:block;width:1080px;height:1920px}
+body.preview canvas{width:min(100vw,50vh*1.125*0.9);height:auto;margin:0 auto}
+#ui{display:none;padding:8px;gap:8px;align-items:center;justify-content:center}
+body.preview #ui{display:flex}
+input[type=range]{width:60vw}
+</style></head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="ui"><button id="play">play</button><input id="scrub" type="range" min="0" max="62.5" step="0.01" value="0"><span id="tc">0.00</span></div>
+<audio id="mix" src="../out/mix.wav" preload="auto"></audio>
+<script src="core.js"></script>
+<script src="ep01.js"></script>
+<script>
+// Preview mode (no ?render): scrub + play with the mixed audio if present.
+if (!location.search.includes('render')) {
+  document.body.classList.add('preview');
+  const a = document.getElementById('mix'), s = document.getElementById('scrub'), tc = document.getElementById('tc');
+  let playing = false, t = 0;
+  EP.ready.then(() => {
+    const draw = () => { EP.render(Math.round(t * 60)); tc.textContent = t.toFixed(2); s.value = t; };
+    document.getElementById('play').onclick = () => { playing = !playing; if (playing) { a.currentTime = t; a.play().catch(()=>{}); } else a.pause(); };
+    s.oninput = () => { t = +s.value; if (playing) a.currentTime = t; draw(); };
+    const loop = () => { if (playing) { t = a.duration ? a.currentTime : t + 1/60; if (t >= 62.5) { playing = false; a.pause(); } } draw(); requestAnimationFrame(loop); };
+    loop();
+  });
+}
+</script>
+</body></html>

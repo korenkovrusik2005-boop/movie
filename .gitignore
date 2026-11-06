@@ -1,0 +1,9 @@
+ep01/out/seg/
+ep01/out/stills/
+ep01/out/stems/
+ep01/out/mix.wav
+ep01/out/video.mp4
+ep01/out/render.log
+__pycache__/
+node_modules/
+ep01/out/build.log
