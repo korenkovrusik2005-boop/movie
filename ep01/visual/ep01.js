@@ -31,7 +31,44 @@ function banner(c, b) {
   c.textAlign = 'left'; c.fillStyle = '#fff'; c.font = `600 31px InterV, "Noto Color Emoji"`; c.fillText(b.title, -126, 70);
   c.font = '400 29px InterV'; c.fillStyle = 'rgba(255,255,255,.9)'; c.fillText(b.body, -126, 110);
   c.textAlign = 'right'; c.font = '400 24px InterV'; c.fillStyle = 'rgba(255,255,255,.55)'; c.fillText(b.when || 'now', 230, 68);
+  if (b.action) { rrect(c, 146, 88, 84, 38, 19); c.fillStyle = '#34c759'; c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.font = '600 22px InterV'; c.fillText(b.action, 188, 114); }
   c.restore();
+}
+function handset(c, x, y, s, col) { // simple phone-handset glyph
+  c.save(); c.translate(x, y); c.scale(s, s); c.rotate(-.75); c.fillStyle = col;
+  rrect(c, -.5, -.16, 1, .32, .16); c.fill(); rrect(c, -.62, -.34, .34, .5, .14); c.fill(); rrect(c, .28, -.34, .34, .5, .14); c.fill(); c.restore();
+}
+function threadScreen(c, w, h, o) {
+  c.fillStyle = '#000'; c.fillRect(-w / 2, -h / 2, w, h);
+  c.fillStyle = 'rgba(255,255,255,.9)'; c.font = '600 24px InterV'; c.textAlign = 'left'; c.fillText(o.statusTime || '9:31', -222, -510);
+  c.fillStyle = 'rgba(28,28,30,1)'; c.fillRect(-w / 2, -480, w, 170); c.fillStyle = 'rgba(255,255,255,.08)'; c.fillRect(-w / 2, -310, w, 2);
+  c.fillStyle = '#0a84ff'; c.font = '300 64px InterV'; c.fillText('‹', -240, -385);
+  const g = c.createLinearGradient(0, -470, 0, -390); g.addColorStop(0, '#a3a8b4'); g.addColorStop(1, '#6e7380'); c.fillStyle = g; c.beginPath(); c.arc(0, -428, 40, 0, TAU); c.fill();
+  c.fillStyle = '#fff'; c.font = '500 38px InterV'; c.textAlign = 'center'; c.fillText('M', 0, -414);
+  c.font = '500 25px InterV, "Noto Color Emoji"'; c.fillStyle = '#fff'; c.fillText('Mom ❤️ ›', 0, -346);
+  handset(c, 205, -428, 34, '#0a84ff');
+  if (o.tap > 0 && o.tap < 1) { c.fillStyle = `rgba(255,255,255,${.35 * (1 - o.tap)})`; c.beginPath(); c.arc(205, -428, 30 + 40 * o.tap, 0, TAU); c.fill(); }
+  c.fillStyle = 'rgba(235,235,245,.45)'; c.font = '500 21px InterV'; c.fillText('Yesterday 22:41', 0, -120);
+  const bub = (txt, right, y) => { c.font = '400 31px InterV'; const tw = c.measureText(txt).width + 44, x = right ? 244 - tw : -244;
+    rrect(c, x, y, tw, 66, 33); c.fillStyle = right ? '#0a84ff' : '#262628'; c.fill(); c.fillStyle = '#fff'; c.textAlign = 'left'; c.fillText(txt, x + 22, y + 44); c.textAlign = 'center'; };
+  bub('on my way home', true, -95);
+  c.fillStyle = 'rgba(235,235,245,.45)'; c.font = '500 21px InterV'; c.fillText('22:43', 0, 10);
+  bub('call me when you get home', false, 30);
+  c.fillStyle = 'rgba(235,235,245,.35)'; c.font = '500 19px InterV'; c.textAlign = 'right'; c.fillText('Read 22:43', 238, 125); c.textAlign = 'center';
+  rrect(c, -230, 470, 460, 58, 29); c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 2; c.stroke();
+  c.fillStyle = 'rgba(235,235,245,.3)'; c.font = '400 24px InterV'; c.textAlign = 'left'; c.fillText('Message', -205, 507); c.textAlign = 'center';
+}
+function callScreen(c, w, h, o) {
+  const g = c.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, '#2b3442'); g.addColorStop(.6, '#1c222c'); g.addColorStop(1, '#3a3330'); c.fillStyle = g; c.fillRect(-w / 2, -h / 2, w, h);
+  c.textAlign = 'center';
+  const ga = c.createLinearGradient(0, -420, 0, -200); ga.addColorStop(0, '#a3a8b4'); ga.addColorStop(1, '#6e7380'); c.fillStyle = ga; c.beginPath(); c.arc(0, -310, 105, 0, TAU); c.fill();
+  c.fillStyle = '#fff'; c.font = '500 96px InterV'; c.fillText('M', 0, -276);
+  c.font = '500 52px InterV, "Noto Color Emoji"'; c.fillText('Mom ❤️', 0, -120);
+  const dots = '.'.repeat(1 + Math.floor((o.t || 0) * 2) % 3);
+  c.fillStyle = 'rgba(235,235,245,.6)'; c.font = '400 30px InterV'; c.fillText('calling' + dots.padEnd(3, ' '), 0, -70);
+  [[-160, 'speaker'], [0, 'FaceTime'], [160, 'mute']].forEach(([x, lb]) => { c.fillStyle = 'rgba(255,255,255,.16)'; c.beginPath(); c.arc(x, 230, 56, 0, TAU); c.fill();
+    c.fillStyle = 'rgba(235,235,245,.7)'; c.font = '400 20px InterV'; c.fillText(lb, x, 320); });
+  c.fillStyle = '#ff3b30'; c.beginPath(); c.arc(0, 430, 62, 0, TAU); c.fill(); handset(c, 0, 432, 46, '#fff');
 }
 // phone in its own local coords (560×1150, centered)
 function phone(c, o) {
@@ -48,6 +85,8 @@ function phone(c, o) {
     c.fillStyle = 'rgba(255,255,255,.86)'; c.font = '500 34px InterV'; c.fillText(o.day || WALL.day, 0, -398);
     c.fillStyle = 'rgba(255,255,255,.94)'; c.font = '600 200px InterV'; c.letterSpacing = '-6px'; c.fillText(o.time, 0, -206); c.letterSpacing = '0px';
     if (o.banner) banner(c, o.banner);
+    if (o.thread > 0) { c.save(); c.translate((1 - eo(o.thread)) * 540, 0); threadScreen(c, w, h, o); c.restore(); }
+    if (o.call > 0) { c.save(); c.globalAlpha *= o.call; callScreen(c, w, h, o); c.restore(); }
     // lock-screen buttons + home bar
     c.fillStyle = 'rgba(255,255,255,.14)';
     c.beginPath(); c.arc(-190, 440, 44, 0, TAU); c.arc(190, 440, 44, 0, TAU); c.fill();
@@ -117,11 +156,12 @@ function godRays(c, x, y, n, len, a, t, seed = 1, spread = 1.1, base = Math.PI /
 // ======================================================================
 function s1(t) {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#020304'; ctx.fillRect(0, 0, W, H);
-  const on = ss(inv(E.screen_wake, E.screen_wake + .28, t)) * (1 - ss(inv(E.phone_lock, E.phone_lock + .14, t)));
+  const on = ss(inv(E.screen_wake, E.screen_wake + .28, t));
   const p = eio(inv(0.1, 3.7, t)), pr = eio(inv(0.1, 3.95, t));
-  const s = lerp(0.58, 1.66, p) * (1 + .05 * ss(inv(3.7, 7.2, t)));
-  const fy = lerp(0.40, 1, pr), rot = lerp(-0.5, 0, pr);
-  const cx = lerp(620, 540, p) + 6 * Math.sin(t * .5), cy = lerp(1230, 990, p);
+  const grab = spring(t - E.grab, 1.7, .55), whip = ei(inv(E.whip, E.whip + .34, t));
+  const s = lerp(0.58, 1.66, p) * (1 + .03 * ss(inv(3.7, 7.2, t))) * (1 + .12 * grab);
+  const fy = lerp(0.40, 1, pr), rot = lerp(-0.5, 0, pr) + (t > E.grab ? .025 * noise1(t * .9, 7) : 0) + .6 * whip;
+  const hand = t > E.grab ? 1 : 0, cx = lerp(620, 540, p) + 6 * Math.sin(t * .5) + hand * 7 * noise1(t * 1.3, 2), cy = lerp(1230, 990, p) - 30 * grab + hand * 6 * noise1(t * 1.1, 5) - 2600 * whip;
   let jx = 0, jy = 0, jr = 0, creep = 0;
   for (const b of E.buzz) {
     const u = inv(b, b + .46, t);
@@ -169,17 +209,19 @@ function s1(t) {
   ctx.fillStyle = 'rgba(0,0,0,.6)'; rrect(ctx, -300, -590, 600, 1200, 110); ctx.fill();
   let bnr = null;
   if (t > E.banner_in) {
-    const sp = spring(t - E.banner_in, 1.5, .5), out = eio(inv(E.banner_swipe, E.banner_swipe + .32, t));
-    bnr = { y: lerp(-760, -40, sp), x: -640 * out, alpha: inv(E.banner_in, E.banner_in + .12, t) * (1 - out), icon: 'cal', title: '9:00 Strategy Sync', body: 'starts in 2 minutes', when: 'now' };
+    const sp = spring(t - E.banner_in, 1.5, .5);
+    bnr = { y: lerp(-760, -40, sp), alpha: inv(E.banner_in, E.banner_in + .12, t), icon: 'cal', title: '9:00 Meeting', body: 'starts in 2 minutes', when: 'now' };
   }
+  if (whip > 0) ctx.filter = `blur(${(whip * 40).toFixed(1)}px)`;
   phone(ctx, { on, time: '8:58', banner: bnr, glare: .05 + .04 * (1 - p) });
-  ctx.restore();
+  ctx.filter = 'none'; ctx.restore();
+  if (whip > 0) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(0,0,0,${ss(inv(E.whip + .05, E.whip + .4, t))})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
 }
 
 // ======================================================================
 // S2 — curtains open: the empty city + title
 // ======================================================================
-const WIN = { x0: 150, x1: 930, y0: 330, y1: 1480 };
+const WIN = { x0: 150, x1: 930, y0: 330, y1: 1640 };
 const SKY2 = { far: genSkyline(11, -260, 1360, 80, 360, 40, 120), mid: genSkyline(23, -300, 1400, 120, 430, 70, 170) };
 function skyLayer(c, sunX, sunY, o = {}) {
   vgrad(c, -1500, -1500, W + 3000, H + 3000, [[0, o.top || P.skyTop], [.42, o.top || P.skyTop], [.56, P.skyMid], [.7, P.skyLow], [1, P.skyLow]]);
@@ -197,8 +239,8 @@ function s2(t) {
   const lt = t - TL.scenes.s2_window[0], dur = TL.scenes.s2_window[1] - TL.scenes.s2_window[0];
   const open = eo(inv(E.curtain_open, E.curtain_open + 1.55, t));
   const light = ss(inv(E.curtain_open - .1, E.curtain_open + 1.1, t));
-  const p = eio(inv(0, dur, lt));
-  cam.z = 255 * p; cam.x = 55 * p; cam.y = -35 * p; cam.roll = lerp(.012, -.006, p);
+  const p = eio(inv(E.curtain_open + .3, TL.scenes.s2_window[1] + .3, t));
+  cam.z = 255 * p; cam.x = 55 * p; cam.y = 150 * p; cam.roll = lerp(.012, -.006, p);
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
   // ---- outside (through the window) ----
   ctx.save(); planeTf(ctx, 900); ctx.beginPath(); ctx.rect(WIN.x0, WIN.y0, WIN.x1 - WIN.x0, WIN.y1 - WIN.y0); ctx.restore(); ctx.save(); ctx.clip();
@@ -218,15 +260,29 @@ function s2(t) {
     for (const lx of [210, 760]) { const g = Math.floor((lt + lx * .001) / 2.2) % 2 === 0; c.fillStyle = g ? '#5dffa0' : '#ff5a4a'; c.beginPath(); c.arc(lx, 1366, 2.6, 0, TAU); c.fill();
       c.save(); c.globalCompositeOperation = 'screen'; glow(c, lx, 1366, 14, g ? hex('#5dffa0') : hex('#ff5a4a'), .7); c.restore(); }
   });
-  L(1800, 0.6, c => { // wet rooftops right outside
-    c.fillStyle = rgb(mix(P.shadow, P.shadowDeep, .4)); c.beginPath(); c.moveTo(-300, 1430); c.lineTo(520, 1418); c.lineTo(560, 1440); c.lineTo(1400, 1440); c.lineTo(1400, 1900); c.lineTo(-300, 1900); c.fill();
-    vgrad(c, -300, 1440, 1700, 120, [[0, P.skyLow, .55], [1, P.skyLow, 0]]); // wet sheen
-    c.fillStyle = rgb(P.lit); c.fillRect(-300, 1416, 820, 5); c.fillRect(560, 1436, 900, 5);
-    // water tank
-    c.fillStyle = rgb(mix(P.shadowDeep, P.ink, .2)); c.fillRect(690, 1250, 120, 150); c.beginPath(); c.moveTo(680, 1252); c.lineTo(750, 1205); c.lineTo(820, 1252); c.fill();
-    c.fillStyle = rgb(P.lit, .9); c.fillRect(790, 1252, 20, 148);
-    c.fillStyle = rgb(P.shadowDeep); for (const lx of [700, 735, 770, 800]) c.fillRect(lx, 1400, 6, 40);
-    c.fillStyle = rgb(mix(P.shadow, P.ink, .3)); c.fillRect(250, 1385, 90, 40); c.fillRect(360, 1395, 60, 30); c.fillStyle = rgb(P.lit, .8); c.fillRect(250, 1385, 90, 4);
+  L(1800, 0.6, c => { // the street below: a bus arrives on time, opens its doors, nobody gets in
+    c.translate(540, 1480); c.scale(1.4, 1.4); c.translate(-540, -1480);
+    c.fillStyle = rgb(mix(P.shadow, P.shadowDeep, .3)); c.fillRect(-400, 1405, 1900, 40);
+    c.fillStyle = rgb(P.litPale); c.fillRect(-400, 1440, 1900, 16); // far sidewalk
+    vgrad(c, -400, 1456, 1900, 120, [[0, P.wet], [1, mix(P.wet, P.shadowDeep, .3)]]);
+    vgrad(c, -400, 1456, 1900, 60, [[0, P.skyLow, .35], [1, P.skyLow, 0]]);
+    c.fillStyle = rgb(P.litPale, .7); for (let x = -400; x < 1500; x += 120) c.fillRect(x, 1514, 60, 4);
+    c.fillStyle = rgb(hex('#dedbd3'), .8); for (let x = 130; x < 250; x += 20) c.fillRect(x, 1458, 11, 116);
+    c.fillStyle = rgb(P.lit); c.fillRect(-400, 1576, 1900, 20); c.fillStyle = rgb(mix(P.shadow, P.ink, .2)); c.fillRect(-400, 1596, 1900, 120);
+    // shelter
+    c.fillStyle = rgb(P.shadowDeep); c.fillRect(560, 1398, 120, 6); c.fillRect(562, 1398, 4, 44); c.fillRect(674, 1398, 4, 44); c.fillStyle = 'rgba(210,225,235,.25)'; c.fillRect(566, 1404, 108, 36);
+    // traffic light
+    const g = t > E.win_light; c.fillStyle = rgb(P.shadowDeep); c.fillRect(808, 1330, 5, 112); c.fillRect(800, 1318, 22, 46);
+    c.fillStyle = g ? '#3a3a3a' : '#ff4b3e'; c.beginPath(); c.arc(811, 1330, 5, 0, TAU); c.fill(); c.fillStyle = g ? '#46f0a0' : '#2c3a33'; c.beginPath(); c.arc(811, 1352, 5, 0, TAU); c.fill();
+    c.save(); c.globalCompositeOperation = 'screen'; glow(c, 811, g ? 1352 : 1330, 26, g ? hex('#46f0a0') : hex('#ff4b3e'), .8); c.restore();
+    // bus
+    const u = inv(E.wbus_arrive, E.wbus_stop, t), bx = 545 + 900 * Math.pow(1 - u, 2), doors = ss(inv(E.wbus_doors, E.wbus_doors + .5, t));
+    c.fillStyle = 'rgba(20,28,36,.3)'; c.fillRect(bx + 6, 1512, 250, 10);
+    rrect(c, bx, 1452, 260, 62, [14, 6, 4, 6]); c.fillStyle = '#ebe8e1'; c.fill();
+    c.fillStyle = '#2e6f70'; c.fillRect(bx, 1496, 260, 10);
+    c.fillStyle = 'rgba(40,52,62,.75)'; c.fillRect(bx + 6, 1458, 248, 26); c.fillStyle = 'rgba(255,240,215,.5)'; c.fillRect(bx + 22, 1458 + 6, 222, 4);
+    c.fillStyle = doors > .5 ? '#fff1d8' : '#c9c4ba'; c.fillRect(bx + 28, 1458, 22 + 6 * doors, 48); c.fillRect(bx + 138, 1458, 22 + 6 * doors, 48);
+    c.fillStyle = '#16191c'; for (const wx of [52, 210]) { c.beginPath(); c.arc(bx + wx, 1514, 11, 0, TAU); c.fill(); }
   });
   L(900, 0, c => drops(c, 77, WIN.x0, WIN.y0, WIN.x1, WIN.y1, 70, lt, { a: .3 + .7 * light }));
   ctx.restore();
@@ -270,21 +326,7 @@ function s2(t) {
   const flash = ss(inv(E.curtain_open, E.curtain_open + .5, t)) * (1 - ss(inv(E.curtain_open + .5, E.curtain_open + 2.0, t)));
   ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = rgb(P.sunWarm, .35 * flash); ctx.fillRect(0, 0, W, H); ctx.restore();
   // hero, out of focus, the camera slips past the shoulder
-  L(420, lerp(5, 18, p), c => heroBust(c, 330, 1330, 330, { t: lt, wind: .2, rim: P.sunWarm, rimA: .85 * light, rimDx: .04, rimDy: 0, col: hex('#0d1015') }));
-  // title
-  if (t > E.title_in - .1 && t < E.title_out + 1) {
-    const a = ss(inv(E.title_in, E.title_in + 1.1, t)) * (1 - ss(inv(E.title_out, E.title_out + .6, t)));
-    const tr = lerp(64, 20, eo5(inv(E.title_in, E.title_in + 2.4, t)));
-    ctx.save(); screenTf(ctx); ctx.translate(-cam.x * .05, 0);
-    ctx.textAlign = 'center'; ctx.fillStyle = `rgba(255,250,242,${a})`;
-    ctx.shadowColor = `rgba(40,55,70,${.35 * a})`; ctx.shadowBlur = 30;
-    ctx.filter = `blur(${(lerp(8, 0, eo(inv(E.title_in, E.title_in + 1.5, t)))).toFixed(2)}px)`;
-    ctx.font = '400 156px "Instrument Serif"'; ctx.letterSpacing = `${tr}px`; ctx.fillText('STILL OPEN', 540 + tr / 2, 610);
-    ctx.filter = 'none'; ctx.shadowBlur = 14; ctx.shadowColor = `rgba(30,45,60,${.55 * a})`;
-    const a2 = a * ss(inv(E.title_in + .6, E.title_in + 1.6, t));
-    ctx.font = '500 26px InterV'; ctx.letterSpacing = '9px'; ctx.fillStyle = `rgba(255,250,242,${.86 * a2})`; ctx.fillText('EPISODE 01  ·  9:00 MEETING', 545, 678);
-    ctx.restore();
-  }
+  L(420, lerp(5, 18, p), c => heroBust(c, lerp(-430, 330, eo(inv(E.hero_enter, E.hero_enter + 1.2, t))), 1330 + 16 * (1 - eo(inv(E.hero_enter, E.hero_enter + 1.2, t))) * Math.abs(Math.sin(t * 10)), 330, { t: lt, wind: .2, tilt: .1 * ss(inv(E.hero_tilt, E.hero_tilt + .9, t)), rim: P.sunWarm, rimA: .85 * light, rimDx: .04, rimDy: 0, col: hex('#0d1015') }));
 }
 
 // ======================================================================
@@ -311,7 +353,7 @@ const fogc = (col, z, fd = 150, hz = P.haze) => mix(col, hz, 1 - Math.exp(-Math.
 function s3(t) {
   const lt = t - TL.scenes.s3_avenue[0], dur = TL.scenes.s3_avenue[1] - TL.scenes.s3_avenue[0];
   const p = eio2(inv(-.3, dur, lt));
-  Object.assign(c3, { x: lerp(.6, -.3, p), y: lerp(1.55, .82, p), z: lerp(0, 7.5, p), pitch: lerp(.03, .075, p), yaw: .012 * Math.sin(lt * .35), roll: lerp(.014, -.006, p), f: 1250, hy: .55 });
+  Object.assign(c3, { x: lerp(.7, -.1, p), y: lerp(1.5, 1.2, p), z: lerp(0, 3.4, p), pitch: lerp(.035, .05, p), yaw: .012 * Math.sin(lt * .35), roll: lerp(.014, -.006, p), f: 1250, hy: .55 });
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = rgb(P.skyLow); ctx.fillRect(0, 0, W, H);
   ctx.save(); roll3Tf(ctx);
   const sun = pt3([2.5, 26, 700]) || [W / 2, 500];
@@ -324,7 +366,7 @@ function s3(t) {
   const groundFar = 900;
   poly3(ctx, [[-10.6, 0, .3], [10.6, 0, .3], [10.6, 0, groundFar], [-10.6, 0, groundFar]], rgb(P.wet));
   { // fog on ground by depth (screen-space gradient from horizon to bottom)
-    const hz = pt3([0, 0, groundFar]) || [0, H * .5], nb = pt3([0, 0, 2]) || [0, H];
+    const hz = pt3([0, 0, c3.z + groundFar]) || [0, H * .5], nb = pt3([0, 0, c3.z + 2]) || [0, H];
     const g = ctx.createLinearGradient(0, hz[1], 0, nb[1]);
     [[0, 600], [.04, 160], [.12, 60], [.3, 22], [.6, 8], [1, 2]].forEach(([o, z]) => g.addColorStop(o, rgb(fogc(P.wet, z, 120), 1)));
     ctx.save(); path3(ctx, [[-7, 0, .3], [7, 0, .3], [7, 0, groundFar], [-7, 0, groundFar]]); ctx.fillStyle = g; ctx.fill();
@@ -367,9 +409,12 @@ function s3(t) {
   for (const l of AV.lamps) items.push({ z: l.z, f: () => lamp(l) });
   items.push({ z: 36, f: () => trafficLight(7.45, 36, t) }, { z: 36.2, f: () => trafficLight(-7.45, 36.2, t) });
   items.push({ z: 46, f: () => clockSign(t) });
-  items.push({ z: 24, f: () => {
-    poly3(ctx, [[.32, .01, 24], [.72, .01, 24], [1.05, .01, 13], [.3, .01, 13]], 'rgba(30,40,52,.38)');
-    const ft = pt3([.52, 0, 24]), hd = pt3([.52, 1.76, 24]); if (ft && hd) heroStanding(ctx, ft[0], ft[1], ft[1] - hd[1], rgb(fogc(P.ink, 24 - c3.z, 160)), { rim: rgb(P.sunWarm, .8) });
+  const eff = lt - clamp(t - E.walk_pause[0], 0, E.walk_pause[1] - E.walk_pause[0]), wk = 1 - ss(inv(E.walk_pause[0] - .3, E.walk_pause[0], t)) + ss(inv(E.walk_pause[1] - .2, E.walk_pause[1] + .2, t));
+  const hz = 8.6 + .72 * eff, hxw = .45 + .08 * Math.sin(eff * .7), head = ss(inv(19.6, 20.3, t)) - 2 * ss(inv(21.7, 22.4, t)) + ss(inv(23.3, 23.9, t));
+  items.push({ z: hz, f: () => {
+    poly3(ctx, [[hxw - .2, .01, hz], [hxw + .22, .01, hz], [hxw + .6, .01, hz - 7], [hxw - .1, .01, hz - 7]], 'rgba(30,40,52,.34)');
+    const ft = pt3([hxw, 0, hz]), hd = pt3([hxw, 1.76, hz]);
+    if (ft && hd) heroStanding(ctx, ft[0], ft[1], ft[1] - hd[1], rgb(fogc(P.ink, hz - c3.z, 160)), { rim: rgb(P.sunWarm, .85), walk: clamp(wk), phase: eff * TAU * .85, head });
   } });
   items.sort((a, b) => b.z - a.z).forEach(it => it.f());
   godRays(ctx, sun[0], sun[1], 7, 2600, .07, lt, 3, 1.3);
@@ -437,7 +482,7 @@ function clockSign(t) {
   const flip = t > E.clock_flip, hgt = b[1] - a[1];
   ctx.save(); ctx.font = `600 ${(hgt * .62).toFixed(1)}px InterV`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffb35c'; ctx.shadowColor = 'rgba(255,170,80,.9)'; ctx.shadowBlur = hgt * .4;
-  ctx.fillText(flip ? '09:00' : '08:59', (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + hgt * .04); ctx.restore();
+  ctx.fillText(flip ? '09:04' : '09:03', (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + hgt * .04); ctx.restore();
   ctx.fillStyle = rgb(fogc(hex('#2a2f35'), z - c3.z, 200)); const m = pt3([-10.5, 5.1, z]); if (m) ctx.fillRect(m[0], m[1] - 2, a[0] - m[0], 4);
 }
 
@@ -575,6 +620,7 @@ function s4(t) {
     c.fillStyle = rgb(P.lit); c.fillRect(740, 905, 700, 5);
     c.fillStyle = '#39414a'; c.fillRect(800, 1530, 400, 22); c.fillRect(830, 1552, 12, 120); c.fillRect(1150, 1552, 12, 120);
   });
+  L(640, 7, c => heroBust(c, 960, 1470, 190, { t, wind: .4, torso: 2.6, tilt: -.06 * ss(inv(E.bus_doors_open + .4, E.bus_doors_open + 1.2, t)), rim: P.sunWarm, rimA: .8, rimDx: -.035, rimDy: 0, col: hex('#161a21') }));
   L(760, 1.6, c => { // e-ink departure board on a pole
     c.fillStyle = '#2a2f35'; c.fillRect(205, 1240, 22, 700);
     rrect(c, 70, 1080, 300, 170, 14); c.fillStyle = '#1b1f24'; c.fill();
@@ -670,7 +716,7 @@ function s5(t) {
 // S6 — café: OPEN sign, the machine pours an order for nobody
 // ======================================================================
 const CAFE = { x0: 110, x1: 970, y0: 470, y1: 1560 };
-function s6cam(t) { const p = eio(inv(TL.scenes.s6_cafe[0], TL.scenes.s6_cafe[0] + 2.9, t)); cam.z = 770 * p + 45 * ss(inv(TL.scenes.s6_cafe[0] + 2.9, 42.2, t)); cam.x = lerp(-50, 18, p); cam.y = lerp(40, 70, p); cam.roll = lerp(-.01, .004, p); }
+function s6cam(t) { const p = eio(inv(TL.scenes.s6_cafe[0], TL.scenes.s6_cafe[0] + 2.2, t)); cam.z = 770 * p + 40 * ss(inv(TL.scenes.s6_cafe[0] + 2.2, TL.scenes.s6_cafe[1], t)); cam.x = lerp(-50, 18, p); cam.y = lerp(40, 70, p); cam.roll = lerp(-.01, .004, p); }
 function machineArt(c, t) {
   const grind = t > E.grind[0] && t < E.grind[1], jit = grind ? (hash(t * 913) - .5) * 1.2 : 0;
   c.save(); c.translate(jit, 0);
@@ -798,47 +844,92 @@ function s7(t) {
     const r = rng(17); c.fillStyle = 'rgba(60,70,80,.25)'; for (let i = 0; i < 18; i++) { c.beginPath(); c.ellipse(lerp(-600, 1600, r()), 1530 + r() * 30, 40 + r() * 70, 6 + r() * 6, 0, 0, TAU); c.fill(); }
   });
   L(640, 0, c => { paperCup(c, 760, 1520, 52, { lit: hex('#fff3e4'), shade: hex('#b8a99a') }); steam(c, 760, 1430, 110, t, .6); });
-  L(700, 0, c => heroBust(c, 470, 1265, 150, { t, wind: 1, torso: 1.62, tilt: .07 * ss(inv(47, 49, t)), rim: P.sun, rimA: .95, rimDx: -.028, rimDy: -.03, col: hex('#1a1f27') }));
+  L(700, 0, c => heroBust(c, 470, 1265, 150, { t, wind: 1, torso: 1.62, tilt: .07 * ss(inv(E.exhale, E.exhale + 1.6, t)), rim: P.sun, rimA: .95, rimDx: -.028, rimDy: -.03, col: hex('#1a1f27') }));
 }
 
 // ======================================================================
-// S8 — "Mom ❤️: call me when you get home"
+// S7a — the meeting, still waiting for him
+// ======================================================================
+const SKY_MEET = genSkyline(91, -600, 1700, 500, 1100, 220, 380);
+function sMeet(t) {
+  const S7 = TL.scenes.s7_meeting, lt = t - S7[0];
+  cam.x = 10 * noise1(lt * .7, 1); cam.y = 8 * noise1(lt * .6, 2); cam.roll = .012 * noise1(lt * .5, 3) - .02; cam.z = 40 * lt / 4.5;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  L(30000, 0, c => skyLayer(c, 260, 1000, { top: hex('#86b3cc'), r: 1100, a: .7 }));
+  L(9000, 22, c => drawSkyline(c, SKY_MEET, 1560, { shadow: mix(P.lit, P.shadow, .25), lit: P.litPale, litFrac: .3, sunSide: -1, win: .6, winCol: mix(P.skyMid, P.shadow, .3), cell: 40, row: 56, extra: 800 }));
+  L(9000, 0, c => { c.globalCompositeOperation = 'screen'; const r = rng(8); for (let i = 0; i < 10; i++) glow(c, lerp(0, 1080, r()), lerp(900, 1700, r()), 50 + r() * 70, P.sun, .25 + r() * .25); });
+  L(5000, 18, c => vgrad(c, -900, 1500, W + 1800, 900, [[0, P.wet], [1, P.shadowDeep]]));
+  const sw = eio(inv(E.meet_swipe, E.meet_swipe + .35, t));
+  L(700, 0, c => {
+    c.translate(540, 1010); c.rotate(-.035); c.scale(1.4, 1.4);
+    c.fillStyle = 'rgba(10,15,20,.35)'; c.filter = 'blur(18px)'; rrect(c, -270, -560, 580, 1180, 100); c.fill(); c.filter = 'none';
+    phone(c, { on: 1, time: '9:12', glare: .1, banner: { y: -40, x: -640 * sw, alpha: 1 - sw, icon: 'cal', title: '9:00 Meeting', body: 'started 12 min ago', when: '9:00', action: 'Join' } });
+  });
+}
+
+// ======================================================================
+// S8 — he opens the thread himself; calls; nobody answers
 // ======================================================================
 function s8(t) {
-  const lt = t - TL.scenes.s8_mom[0], p = .22 * eio2(inv(0, E.ping - TL.scenes.s8_mom[0], lt)) + .78 * eio(inv(E.ping + .25, E.screen_dim + .2, t));
-  cam.z = lerp(0, 250, p); cam.x = lerp(-10, 45, p); cam.y = lerp(0, 205, p); cam.roll = lerp(.006, -.004, p);
+  const S8 = TL.scenes.s8_mom, pb = 0, pin = eio2(inv(S8[0], S8[1], t));
+  cam.z = 140 + 110 * pin; cam.x = 20 - 10 * pin; cam.y = 120 + 80 * pin; cam.roll = .006 - .004 * pin;
   const cloud = ss(inv(E.cloud[0], E.cloud[1], t));
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  citySunLayers(t, 1, { sx: 560, sy: 820 });
-  L(9000, 0, c => { c.globalCompositeOperation = 'screen'; const r = rng(4); for (let i = 0; i < 12; i++) glow(c, lerp(100, 1000, r()), lerp(700, 1150, r()), 40 + r() * 60, P.sun, .25 + r() * .25); });
-  // ledge surface, sharp-ish near the phone
-  L(1000, 4, c => { vgrad(c, -900, 860, W + 1800, 40, [[0, P.lit, 0], [1, P.lit, 1]]); });
+  citySunLayers(t, 1 - .55 * pb, { sx: 560, sy: 820 });
+  L(9000, 0, c => { c.globalCompositeOperation = 'screen'; const r = rng(4); for (let i = 0; i < 12; i++) glow(c, lerp(100, 1000, r()), lerp(700, 1150, r()), 40 + r() * 60, P.sun, (.25 + r() * .25) * (1 - pb)); });
+  L(1000, 4 * (1 - pb), c => { vgrad(c, -1900, 860, W + 3800, 40, [[0, P.lit, 0], [1, P.lit, 1]]); });
   L(900, 0, c => {
-    vgrad(c, -900, 890, W + 1800, 1300, [[0, hex('#e6c9a2')], [.4, hex('#d2b48e')], [1, hex('#a88d6f')]]);
-    const r = rng(23); for (let i = 0; i < 260; i++) { c.fillStyle = `rgba(${r() < .5 ? '255,245,230' : '70,55,40'},${.1 + r() * .12})`; c.fillRect(lerp(-600, 1700, r()), lerp(900, 2200, r()), 2 + r() * 3, 2 + r() * 3); }
+    vgrad(c, -1900, 890, W + 3800, 2600, [[0, hex('#e6c9a2')], [.25, hex('#d2b48e')], [1, hex('#8f775e')]]);
+    const r = rng(23); for (let i = 0; i < 420; i++) { c.fillStyle = `rgba(${r() < .5 ? '255,245,230' : '70,55,40'},${.1 + r() * .12})`; c.fillRect(lerp(-1600, 2700, r()), lerp(900, 3400, r()), 2 + r() * 3, 2 + r() * 3); }
     c.fillStyle = 'rgba(90,80,70,.22)'; c.beginPath(); c.ellipse(300, 1700, 260, 60, -.05, 0, TAU); c.fill();
   });
-  L(980, 3.5, c => { paperCup(c, 215, 1030, 82, { lit: hex('#fff3e4'), shade: hex('#b8a99a') }); steam(c, 215, 890, 150, t, .35); });
-  // cloud shadow passing over everything but the phone's own light
+  L(980, 3.5 * (1 - pb), c => { paperCup(c, 215, 1030, 82, { lit: hex('#fff3e4'), shade: hex('#b8a99a') }); steam(c, 215, 890, 150, t, .3); });
   if (cloud > 0) {
     ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = 'multiply';
     const edge = lerp(W + 700, -700, cloud), g = ctx.createLinearGradient(edge - 500, 0, edge + 500, 0);
     g.addColorStop(0, 'rgba(118,134,160,1)'); g.addColorStop(1, 'rgba(255,255,255,1)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over'; ctx.restore();
   }
-  // phone on the stone
-  const on = ss(inv(E.ping - .05, E.ping + .22, t)) * (1 - ss(inv(E.screen_dim, E.screen_dim + .35, t)));
+  const on = ss(inv(E.screen_on - .05, E.screen_on + .2, t)), thread = inv(E.thread_in, E.thread_in + .38, t), call = ss(inv(E.call_screen, E.call_screen + .3, t));
   L(900, 0, c => {
     c.translate(600, 1300); c.transform(1, 0, 0, .84, 0, 0); c.rotate(.07); c.scale(1.15, 1.15);
     c.fillStyle = 'rgba(40,30,20,.35)'; c.filter = 'blur(10px)'; rrect(c, -270, -555, 580, 1180, 100); c.fill(); c.filter = 'none';
-    let bn = null;
-    if (t > E.ping) { const sp = spring(t - E.ping, 1.5, .5); bn = { y: lerp(-760, -40, sp), alpha: inv(E.ping, E.ping + .12, t), icon: 'msg', title: 'Mom ❤️', body: 'call me when you get home', when: 'now' }; }
-    phone(c, { on, time: '9:34', banner: bn, glare: .16 * (1 - .6 * cloud) });
+    phone(c, { on, time: '9:31', thread, call, tap: inv(E.call_tap, E.call_tap + .3, t), t: t - E.call_screen, glare: .16 * (1 - .6 * cloud) });
   });
-  // hero in the foreground, out of focus; the head turns toward the phone
-  const turn = ss(inv(E.head_turn, E.head_turn + 1.1, t));
-  L(380, 15, c => heroBust(c, -40, 640, 250, { t, wind: .7, turn, tilt: .05, torso: 2.3, rim: P.sun, rimA: .7 * (1 - .8 * cloud), rimDx: .03, rimDy: -.03, col: hex('#14181e') }));
-  const fade = ss(inv(E.screen_dim + .1, TL.scenes.s8_mom[1], t));
+  // hero sitting beside the phone: huge and soft at first, revealed small as the camera pulls away
+  L(380, lerp(15, 2, pb), c => {
+    c.fillStyle = 'rgba(30,22,15,.35)'; c.beginPath(); c.ellipse(-30, 640 + 3.15 * 250, 300, 50, 0, 0, TAU); c.fill();
+    heroBust(c, -40, 640, 250, { t, wind: .7, turn: 1, tilt: .05, torso: 3.15, rim: P.sun, rimA: .7 * (1 - .8 * cloud), rimDx: .03, rimDy: -.03, col: hex('#14181e') });
+  });
+  const fade = ss(inv(E.fade_black[0], E.fade_black[1], t));
+  if (fade > 0) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+}
+
+// ======================================================================
+// S8b — wide: a small figure on the roof, phone at his ear, ringing
+// ======================================================================
+function s8wide(t) {
+  const S = TL.scenes.s8_wide, p = eio2(inv(S[0], S[1], t)), cloud = ss(inv(E.cloud[0], E.cloud[1], t));
+  cam.y = lerp(-380, -560, p); cam.z = lerp(-200, -560, p); cam.x = lerp(30, -20, p); cam.roll = lerp(-.006, .004, p);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  citySunLayers(t, 0);
+  L(15000, 0, c => godRays(c, 640, 900, 9, 2400, .1 * (1 - .8 * cloud), t - S[0], 7, 1.6));
+  L(1500, 1, c => { c.fillStyle = rgb(mix(P.shadowDeep, P.shadow, .4)); c.fillRect(700, 1620, 900, 600); c.fillStyle = rgb(P.lit); c.fillRect(700, 1620, 900, 6);
+    c.fillStyle = rgb(P.shadowDeep); c.fillRect(900, 1540, 110, 80); c.fillStyle = rgb(P.sunWarm, .9); c.fillRect(900, 1540, 6, 80); });
+  L(650, 0, c => {
+    c.fillStyle = rgb(hex('#d9bd98')); c.fillRect(-2400, 1500, W + 4800, 70);
+    vgrad(c, -2400, 1500, W + 4800, 70, [[0, P.sun, .5], [1, P.sun, 0]]);
+    c.fillStyle = rgb(hex('#5d6a77')); c.fillRect(-2400, 1570, W + 4800, 2400);
+  });
+  L(640, 0, c => { paperCup(c, 760, 1520, 52, { lit: hex('#fff3e4'), shade: hex('#b8a99a') }); });
+  L(700, 0, c => heroBust(c, 470, 1265, 150, { t, wind: 1, torso: 1.62, tilt: .1, phoneArm: true, rim: P.sun, rimA: .9 * (1 - .7 * cloud), rimDx: -.028, rimDy: -.03, col: hex('#1a1f27') }));
+  if (cloud > 0) {
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = 'multiply';
+    const edge = lerp(W + 900, -900, cloud), g = ctx.createLinearGradient(edge - 700, 0, edge + 700, 0);
+    g.addColorStop(0, 'rgba(112,128,156,1)'); g.addColorStop(1, 'rgba(255,255,255,1)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over'; ctx.restore();
+  }
+  const fade = ss(inv(E.fade_black[0], E.fade_black[1], t));
   if (fade > 0) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
 }
 
@@ -850,7 +941,8 @@ function s9(t) {
   const a = ss(inv(E.end_card, E.end_card + .9, t)) * (1 - ss(inv(TL.duration - .8, TL.duration - .05, t)));
   ctx.textAlign = 'center'; ctx.fillStyle = `rgba(255,248,238,${.92 * a})`;
   ctx.font = '400 104px "Instrument Serif"'; ctx.letterSpacing = '18px'; ctx.fillText('STILL OPEN', 549, 930);
-  ctx.font = '500 24px InterV'; ctx.letterSpacing = '10px'; ctx.fillStyle = `rgba(255,248,238,${.5 * a})`; ctx.fillText('FOLDSHIFT', 545, 1010);
+  ctx.font = '500 25px InterV'; ctx.letterSpacing = '9px'; ctx.fillStyle = `rgba(255,248,238,${.62 * a})`; ctx.fillText('EP 01  ·  9:00 MEETING', 545, 1005);
+  ctx.font = '500 20px InterV'; ctx.letterSpacing = '10px'; ctx.fillStyle = `rgba(255,248,238,${.38 * a})`; ctx.fillText('FOLDSHIFT', 545, 1720);
   ctx.letterSpacing = '0px';
 }
 
@@ -875,6 +967,7 @@ function captions(t) {
 // ======================================================================
 // master
 // ======================================================================
+const CAPTIONS = false; // v2: no subtitles / narration on screen — only the phone UI speaks
 function render(t, frame) {
   const S = TL.scenes;
   camReset(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
@@ -889,19 +982,14 @@ function render(t, frame) {
     po = { bloom: .22 };
   }
   else if (t < S.s5_signal[1]) { s5(t); po = { bloom: .3 }; }
-  else if (t < S.s7_roof[0]) { s6(t); po = { bloom: .3 }; }
-  else if (t < S.s6_cafe[1]) { // dissolve café → roof
-    const a = ss(inv(S.s7_roof[0], S.s6_cafe[1], t));
-    s6(t); xfctx.setTransform(1, 0, 0, 1, 0, 0); xfctx.globalAlpha = 1; xfctx.drawImage(cv, 0, 0);
-    camReset(); s7(t); ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1 - a; ctx.drawImage(xfb, 0, 0); ctx.restore();
-    po = { bloom: .3 };
-  }
+  else if (t < S.s6_cafe[1]) { s6(t); po = { bloom: .3 }; }
+  else if (t < S.s7_meeting[1]) { sMeet(t); po = { bloom: .26 }; }
   else if (t < S.s7_roof[1]) { s7(t); po = { bloom: .32 }; }
   else if (t < S.s8_mom[1]) { s8(t); po = { bloom: .26 }; }
+  else if (t < S.s8_wide[1]) { s8wide(t); po = { bloom: .3 }; }
   else { s9(t); po = { bloom: 0, vig: .3, grain: .06 }; }
   post(frame, po);
-  captions(t);
-  // opening from black
+  if (CAPTIONS) captions(t);
   if (t < .3) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(0,0,0,${1 - t / .3})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
 }
 

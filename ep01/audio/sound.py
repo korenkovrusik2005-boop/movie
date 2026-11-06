@@ -126,33 +126,55 @@ gust = np.stack([bp(w2, 500, 2500), bp(w1, 500, 2500)], 1) * (np.clip(np.sin(2 *
 city = np.stack([lp(brown(N), 160), lp(brown(N), 160)], 1)
 room = np.stack([lp(pink(N), 400), lp(pink(N), 400)], 1)
 s2o = E["curtain_open"]
-wind_g = smooth_env([(0, 0), (s2o - .1, 0), (s2o + .6, .22), (S["s3_avenue"][0], .5), (S["s4_bus"][0], .35), (S["s5_signal"][0], .4), (S["s6_cafe"][0], .3), (S["s6_cafe"][0] + 2.5, .06),
-                     (S["s7_roof"][0], .2), (S["s7_roof"][0] + 1.5, .75), (S["s8_mom"][0], .7), (E["ping"] + 1, .55), (E["cloud"][0] + 1, .9), (S["s8_mom"][1], .4), (S["s9_end"][0] + 1, 0), (DUR, 0)])
-city_g = smooth_env([(0, .05), (s2o, .05), (s2o + .8, .35), (S["s3_avenue"][0], .55), (S["s6_cafe"][0] + 2.5, .2), (S["s7_roof"][0], .5), (S["s8_mom"][0], .35), (S["s9_end"][0], 0), (DUR, 0)])
-room_g = smooth_env([(0, .22), (s2o, .22), (s2o + .5, .08), (S["s3_avenue"][0], 0), (S["s6_cafe"][0] + 1.8, 0), (S["s6_cafe"][0] + 2.6, .3), (S["s6_cafe"][1], .3), (S["s6_cafe"][1] + .4, 0), (S["s9_end"][0], 0), (S["s9_end"][0] + .5, .12), (DUR, 0)])
+S3, S4, S5, S6, S7m, S7, S8, S8w, S9 = (S[k] for k in ["s3_avenue", "s4_bus", "s5_signal", "s6_cafe", "s7_meeting", "s7_roof", "s8_mom", "s8_wide", "s9_end"])
+wind_g = smooth_env([(0, 0), (s2o - .1, 0), (s2o + .7, .22), (S3[0], .45), (S4[0], .35), (S5[0], .4), (S6[0], .3), (S6[0] + 2.0, .06), (S6[1], .06),
+                     (S7m[0], .3), (S7[0], .45), (S7[0] + 1.5, .7), (S8[0], .5), (S8w[0], .7), (E["cloud"][0] + 1, .95), (E["fade_black"][1] - .02, .8), (E["fade_black"][1], 0), (DUR, 0)])
+city_g = smooth_env([(0, .05), (s2o, .05), (s2o + .8, .18), (S3[0], .22), (S6[0] + 2.0, .1), (S7m[0], .2), (S7[0], .25), (S8w[0], .2), (E["fade_black"][1] - .02, .15), (E["fade_black"][1], 0), (DUR, 0)])
+room_g = smooth_env([(0, .22), (s2o, .22), (s2o + .5, .08), (S3[0], 0), (S6[0] + 1.6, 0), (S6[0] + 2.3, .3), (S6[1], .3), (S6[1] + .05, 0), (S9[0], 0), (S9[0] + 1.0, .08), (DUR, 0)])
 amb += wind * wind_g[:, None] * .5 + gust * wind_g[:, None] * .25 + city * city_g[:, None] * .5 + room * room_g[:, None] * .25
 # muffled city through the closed window during S1
 amb += lp(city, 220) * smooth_env([(0, 0), (.4, .25), (s2o, .25), (s2o + .3, 0), (DUR, 0)])[:, None] * .6
 # birds: none in the dark, alive after the curtains, sparse on the roof, distant at the end
-birds_bed(s2o + .3, S["s3_avenue"][1], 1.6, .05, amb)
-birds_bed(S["s4_bus"][0], S["s5_signal"][1], .7, .03, amb, far=True)
-birds_bed(S["s7_roof"][0] + .5, S["s8_mom"][0], 1.0, .045, amb)
-birds_bed(S["s8_mom"][0], E["ping"], .8, .03, amb, far=True)
-birds_bed(E["ping"] + 1.5, S["s8_mom"][1] - 1, .35, .02, amb, far=True)
+birds_bed(s2o + .3, S3[1], 1.5, .05, amb)
+birds_bed(S4[0], S5[1], .7, .03, amb, far=True)
+birds_bed(S7m[0], S8[0], 1.0, .045, amb)
+birds_bed(S8[0], S8w[0], .6, .025, amb, far=True)
+birds_bed(S8w[0] + .5, E["fade_black"][0], .35, .02, amb, far=True)
 # café neon hum (exterior) + fridge hum (interior)
-n6 = sec(S["s6_cafe"][1] - S["s6_cafe"][0]); t6 = np.arange(n6) / SR
+n6 = sec(S6[1] - S6[0]); t6 = np.arange(n6) / SR
 hum = sum(np.sin(2 * np.pi * 50 * k * t6) / k ** 1.5 for k in range(1, 8)) * .02 * adsr(n6, .3, .1, 1, 1.0)
-add(amb, pan(hp(hum, 80).astype(np.float32), -.2), S["s6_cafe"][0])
+add(amb, pan(hp(hum, 80).astype(np.float32), -.2), S6[0])
 
-# --- S1: vibration, lock click ------------------------------------------
+# --- S1: vibration, the grab, out of bed ------------------------------
+def rustle(dur, lo=300, hi=4000):
+    n = sec(dur); x = bp(rng.standard_normal(n), lo, hi) * (0.4 + 0.6 * np.abs(lp(rng.standard_normal(n), 12) * 30).clip(0, 1))
+    return (x * np.sin(np.pi * np.linspace(0, 1, n)) ** 1.5).astype(np.float32)
+def thump(f=70, dur=.18, click_f=900):
+    n = sec(dur); t = np.arange(n) / SR
+    return M((np.sin(2 * np.pi * f * t * (1 - .3 * t / dur)) * np.exp(-t / .045)).astype(np.float32), click(click_f, .02, .7) * .35)
+def step(kind='wood'):
+    if kind == 'wood': return M(thump(rng.uniform(85, 110), .14, 1400) * .9, bp(rng.standard_normal(sec(.06)), 800, 5000) * np.exp(-np.arange(sec(.06)) / SR / .012) * .25)
+    n = sec(.16); t = np.arange(n) / SR  # wet asphalt: soft heel + splashy scuff
+    return M(thump(rng.uniform(70, 90), .12, 1100) * .6, (bp(rng.standard_normal(n), 900, 7000) * np.exp(-t / .035) * .55).astype(np.float32))
 for b in E["buzz"]: add(sfx, pan(buzz(), .05), b, .16)
-add(sfx, pan(whoosh(.36, 600, 5000, .4), -.4), E["banner_swipe"], .06)
-add(sfx, pan(M(click(3200, .03, .6), click(900, .05, .3) * .6), 0), E["phone_lock"], .22)
+add(sfx, pan(rustle(1.0, 250, 3500), -.2), E["grab"] - .55, .16)           # blanket
+add(sfx, pan(M(click(2600, .02, .6), thump(160, .08, 2000) * .5), 0), E["grab"] + .05, .12)  # phone off the wood
+add(sfx, pan(whoosh(.4, 500, 4000, .5), .3), E["whip"], .1)
+add(sfx, pan(rustle(.8, 200, 3000), .1), E["whip"] + .1, .2)
+for i, tk in enumerate([6.55, 6.72]): add(sfx, pan(thump(60, .22, 600), -.1), tk, .35)  # feet hit the floor
+tk = 6.98
+while tk < E["hero_enter"] + 1.15:  # hurried steps to the window, left → centre
+    add(sfx, pan(step('wood'), np.interp(tk, [6.9, E["hero_enter"] + 1.1], [-.7, 0])), tk, .32); tk += rng.uniform(.27, .32)
 
-# --- S2: curtain + rings -------------------------------------------------
-add(sfx, pan(whoosh(1.5, 250, 2200, .35), 0), s2o - .05, .22)
-for i in range(7): add(sfx, pan(click(rng.uniform(3500, 5200), .03, .8), -.6 if i % 2 else .6), s2o + .05 + i * .12 + rng.uniform(0, .05), .05)
-# (title: no hit, just the world breathing in)
+# --- S2: curtains; the street below is too quiet ---------------------------
+add(sfx, pan(whoosh(1.4, 250, 2200, .3), 0), s2o - .08, .26)
+for i in range(7): add(sfx, pan(click(rng.uniform(3500, 5200), .03, .8), -.6 if i % 2 else .6), s2o + .02 + i * .1 + rng.uniform(0, .04), .05)
+nw = sec(E["wbus_stop"] - E["wbus_arrive"] + 4); tw = np.arange(nw) / SR; vw = np.clip(1 - tw / (E["wbus_stop"] - E["wbus_arrive"]), 0, 1)
+wbus = lp(np.sin(np.cumsum(150 + 380 * vw) / SR * 2 * np.pi) * (.3 + .7 * vw) + bp(rng.standard_normal(nw), 600, 3000) * vw * .8, 1800) * adsr(nw, .8, .1, 1, 1.5)
+add(sfx, verb(pan(wbus.astype(np.float32), np.interp(tw, [0, 2.3], [.7, .15])), rt=1.6, wet=.4), E["wbus_arrive"], .05)
+add(sfx, verb(pan(M(bell(988, 1.0, decay=.6), np.zeros(sec(.3), np.float32)) , .15), rt=1.8, wet=.5), E["wbus_doors"] + .1, .018)
+add(sfx, verb(pan(lp(bp(rng.standard_normal(sec(.6)), 1500, 6000) * adsr(sec(.6), .02, .1, .6, .4), 3000).astype(np.float32), .15), rt=1.6, wet=.5), E["wbus_doors"], .03)
+add(sfx, pan(click(900, .03, .5), .3), E["win_light"], .02)
 
 # --- S3: clock flip tick, relay clack, drips ----------------------------
 add(sfx, pan(click(1800, .02, .4), -.5), E["clock_flip"], .05)
@@ -161,16 +183,22 @@ for k in range(9):
     tk = S["s3_avenue"][0] + .4 + k * .8 + rng.uniform(0, .3)
     add(sfx, pan(M(chirp(900, 2400, .03) * .6, click(1200, .02, .3)), rng.uniform(-.5, .5)), tk, .035)
 
+p0, p1 = E["walk_pause"]
+for k in range(1, 40):
+    eff = k / 1.7; tk = S3[0] + eff + (0 if S3[0] + eff < p0 else p1 - p0)
+    if tk >= S3[1]: break
+    add(sfx, pan(step("wet"), -.05 if k % 2 else .05), tk, .3)
+
 # --- S4: electric bus -----------------------------------------------------
 def bus_front(t):
     if t < E["bus_stop"]: u = np.clip((t - E["bus_arrive"]) / (E["bus_stop"] - E["bus_arrive"]), 0, 1); return 150 + 1130 * (1 - u) ** 2.2
     if t < E["bus_depart"]: return 150.0
     d = t - E["bus_depart"]; return 150 - .5 * 1700 * d * d
-b0, b1 = sec(S["s4_bus"][0] - 1.0), sec(S["s5_signal"][0] + 1.5)
+b0, b1 = sec(S4[0] - 1.0), sec(S5[0] + 1.5)
 tb = np.arange(b0, b1) / SR
 fx = np.array([bus_front(x) for x in tb]); vel = np.abs(np.gradient(fx) * SR) / 150.0  # m/s
 if True:  # before arrival the bus approaches from off-screen right at ~6.4 m/s
-    pre = tb < E["bus_arrive"]; vel[pre] = 6.4; fx[pre] = 150 + 1130 + (E["bus_arrive"] - tb[pre]) * 960
+    pre = tb < E["bus_arrive"]; v0 = 1130 * 2.2 / (E["bus_stop"] - E["bus_arrive"]); vel[pre] = v0 / 150; fx[pre] = 150 + 1130 + (E["bus_arrive"] - tb[pre]) * v0
 spd = np.clip(vel / 16, 0, 1); spd_s = np.convolve(spd, np.ones(2400) / 2400, mode='same')
 pos = np.clip((fx + 900 - 540) / 1100, -1, 1)
 nb = len(tb); motor_f = 140 + 520 * spd_s
@@ -181,7 +209,7 @@ tires = hp(bp(rng.standard_normal(nb), 700, 7000), 600) * (spd_s ** 1.3) * 1.2
 idle = lp(rng.standard_normal(nb), 300) * .15 + np.sin(2 * np.pi * 95 * tb) * .05
 dist_g = .35 + .65 * (1 - np.abs(pos)) ** .7
 bus = (motor * .35 + inverter + tires * .5 + idle) * dist_g
-bus_env = np.interp(tb, [tb[0], S["s4_bus"][0] - .2, S["s5_signal"][0] + .3, tb[-1]], [0, 1, .5, 0])
+bus_env = np.interp(tb, [tb[0], S4[0] - .2, S5[0] + .3, tb[-1]], [0, .25, .5, 0]) * np.interp(tb, [tb[0], S4[0] - .05, S4[0] + .3, tb[-1]], [0, 0, 1, 1])
 add(sfx, pan((bus * bus_env).astype(np.float32), pos * .85), tb[0], .35)
 # brake squeal-hiss, doors, chime
 add(sfx, pan(bp(rng.standard_normal(sec(1.1)), 2500, 9000) * np.exp(-np.arange(sec(1.1)) / SR / .35) * np.minimum(1, np.arange(sec(1.1)) / 400), -.1), E["bus_stop"] - .15, .18)
@@ -196,14 +224,14 @@ add(sfx, pan(lp(click(140, .14, .2), 600), -.25), E["bus_doors_close"] + .5, .35
 add(sfx, pan(whoosh(1.0, 300, 4000, .65), np.linspace(.3, -.9, sec(1.0))), E["bus_depart"] + .75, .25)  # wipe pass-by
 
 # --- S5: accessible signal ticks, relay, drop -----------------------------
-s5a = S["s5_signal"][0] - .5; x = s5a; ticks = []
+s5a = S5[0] - .5; x = s5a; ticks = []
 while x < E["signal_green"]: ticks.append((x, 'slow')); x += 1.0
 x = E["signal_green"] + .05
-while x < S["s5_signal"][1] + .3: ticks.append((x, 'fast')); x += .118
+while x < S5[1] + .3: ticks.append((x, 'fast')); x += .118
 tick = lambda f: (click(f, .018, .25) + bp(rng.standard_normal(sec(.018)), 2000, 6000) * np.exp(-np.arange(sec(.018)) / SR / .004) * .3).astype(np.float32)
 for x, k in ticks:
-    if x < S["s4_bus"][1] - .6: continue
-    fade = np.clip((x - (S["s4_bus"][1] - .6)) / .6, 0, 1) * (1 - np.clip((x - S["s5_signal"][1]) / .3, 0, 1))
+    if x < S4[1] - .6: continue
+    fade = np.clip((x - (S4[1] - .6)) / .6, 0, 1) * (1 - np.clip((x - S5[1]) / .3, 0, 1))
     add(sfx, pan(tick(880 if k == 'slow' else 1250), .1), x, .14 * fade)
 add(sfx, pan(M(click(500, .06, .5), click(1800, .03, .5) * .4), .1), E["signal_green"], .12)
 drop = M(chirp(700, 2300, .05), bell(1500, .25, ((1, 1),), .05) * .3)
@@ -221,39 +249,50 @@ add(sfx, pan((lp(pump, 400) + gurgle * .5 + stream).astype(np.float32) * adsr(np
 add(sfx, pan((bp(rng.standard_normal(sec(2.2)), 3000, 11000) * adsr(sec(2.2), .4, .2, .5, 1.2)).astype(np.float32), .1), p0 + .3, .03)
 add(sfx, pan(M(bell(1319, 2.4, decay=1.0), bell(1976, 2.0, decay=.9) * .4), .05), E["ready"], .07)
 
-# --- S7: wings of the flock -------------------------------------------------
+# --- S7a: dismissing the meeting --------------------------------------------
+add(sfx, pan(whoosh(.36, 600, 5000, .4), -.4), E["meet_swipe"], .07)
+add(sfx, pan(click(3400, .015, .5), 0), E["meet_swipe"] - .05, .04)
+
+# --- S7: exhale, wings of the flock ---------------------------------------------
+nx = sec(1.6); ex = bp(rng.standard_normal(nx), 250, 2200) * adsr(nx, .25, .2, .7, .9); add(sfx, pan(lp(ex, 1600).astype(np.float32), 0), E["exhale"], .07)
 for i in range(14):
     tf = E["birds"] + .3 + i * .28 + rng.uniform(0, .2)
     flap = bp(rng.standard_normal(sec(.09)), 300, 2500) * np.sin(np.pi * np.linspace(0, 1, sec(.09))) ** 2
     add(sfx, pan(flap.astype(np.float32), -.8 + i * .12), tf, .025)
 
-# --- S8: the ping --------------------------------------------------------------
-ping = bell(hz(88), 2.2, ((1, 1), (2.0, .18), (3.0, .05)), decay=.9) * .8
-ping2 = bell(hz(93), 2.4, ((1, 1), (2.0, .15)), decay=1.0) * .7
-pg = np.zeros(sec(2.6), np.float32); pg[: len(ping)] += ping; pg[sec(.13): sec(.13) + len(ping2)] += ping2
-add(sfx, verb(pan(pg, .08), rt=1.0, wet=.18), E["ping"], .22)
-add(sfx, pan(click(3000, .025, .6), 0), E["screen_dim"], .04)
+# --- S8: he opens the thread, calls, it rings out ------------------------------------
+add(sfx, pan(click(3200, .018, .5), 0), E["screen_on"], .05)
+add(sfx, pan(whoosh(.3, 1500, 6000, .4), .2), E["thread_in"], .03)
+add(sfx, pan(click(2800, .02, .5), .1), E["call_tap"], .07)
+def ringback(dur=1.0):  # double burr: 400+450 Hz, 0.4 on / 0.2 off / 0.4 on, through a small phone speaker
+    n = sec(dur); t = np.arange(n) / SR; x = (np.sin(2 * np.pi * 400 * t) + np.sin(2 * np.pi * 450 * t)) * .5
+    g = ((t < .4) | ((t > .6) & (t < 1.0))).astype(np.float32); g = np.convolve(g, np.ones(240) / 240, 'same')
+    return bp(x * g, 350, 3400).astype(np.float32)
+cut = sec(E["fade_black"][1])
+for r in E["rings"]:
+    rb = ringback(); i = sec(r); rb = rb[: max(0, cut - i)]
+    add(sfx, pan(rb, .05), r, .16 if r < S8w[0] + .5 else .13)
 
-# --- music (almost none) ---------------------------------------------------------
-# under the title: one warm breath
-add(mus, pad([hz(50), hz(57), hz(62), hz(66)], 5.6, att=2.0, rel=2.4, bright=1100), E["title_in"] - .6, .16)
-# roof: Dmaj9 pad + a few piano notes, then a hard stop before the ping
+# --- music (almost none) ------------------------------------------------------------------
 m0, m1 = E["music_in"], E["music_out"]
-add(mus, pad([hz(38), hz(50), hz(54), hz(57), hz(61), hz(64)], m1 - m0 + 1.0, att=3.0, rel=1.1, bright=1700), m0, .22)
-for tn, m, v in [(42.4, 69, .55), (43.6, 66, .45), (44.8, 64, .45), (46.6, 69, .5), (47.2, 71, .45), (48.75, 73, .55), (50.2, 74, .4)]:
-    add(mus, pan(piano(hz(m), 4.5, v), rng.uniform(-.3, .3)), tn, .3)
-# after the message: a single low note as the screen goes dark (Bm colour)
-add(mus, pan(piano(hz(47), 6.0, .6) + piano(hz(54), 6.0, .35), 0), E["screen_dim"] + .05, .32)
-add(mus, pad([hz(47), hz(54), hz(59), hz(62)], 4.6, att=1.6, rel=2.2, bright=900), E["screen_dim"], .1)
+add(mus, pad([hz(38), hz(50), hz(54), hz(57), hz(61), hz(64)], m1 - m0 + 1.2, att=2.6, rel=1.6, bright=1500), m0, .2)
+for tn, m, v in [(45.2, 69, .35), (46.6, 66, .3), (48.4, 73, .3)]:
+    add(mus, pan(piano(hz(m), 4.5, v), rng.uniform(-.3, .3)), tn, .26)
+add(mus, pad([hz(47), hz(54), hz(59), hz(62)], E["fade_black"][1] - E["call_screen"] + 1, att=3.5, rel=.2, bright=800), E["call_screen"], .07)
 mus = verb(mus, rt=3.2, wet=.38, bright=5000)
-mus *= smooth_env([(0, 1), (m1 - .2, 1), (m1 + .05, 0), (E["screen_dim"] - .1, 0), (E["screen_dim"], 1), (DUR, 1)])[:, None]
+mus *= smooth_env([(0, 1), (E["fade_black"][1] - .03, 1), (E["fade_black"][1], 0), (DUR, 0)])[:, None]
 
 # --- voice-over ---------------------------------------------------------------------
+ECHO = {"v03", "v04"}
 for ln in TL["vo"]:
     a, sr0 = sf.read(ROOT / "vo" / "lines" / f"{ln['id']}.wav", dtype='float32')
     a = signal.resample_poly(a, SR, sr0).astype(np.float32)
     a = hp(a, 85); a = a / (np.abs(a).max() + 1e-9)
     add(vo, pan(a, 0), ln["t"], .8)
+    if ln["id"] in ECHO:  # slap-back off the facades + long outdoor tail
+        e = lp(a, 2500); tail = np.zeros((sec(2.5), 2), np.float32)
+        for d, g, p in [(.21, .32, -.5), (.38, .22, .55), (.61, .12, -.3), (.9, .06, .4)]: tail[sec(d): sec(d) + len(e)] += pan(e * g, p)[: len(tail) - sec(d)]
+        add(sfx, verb(tail, rt=2.2, wet=.5, bright=3000), ln["t"], .5)
 vo = verb(vo, rt=.6, wet=.07, bright=7000)
 
 # --- duck ambience/music under VO -----------------------------------------------------

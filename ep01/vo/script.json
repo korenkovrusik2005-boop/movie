@@ -1,15 +1,45 @@
 {
-  "voice": "am_michael",
-  "note": "Calm, close, unperformed. One thought per line. Timings live in ep01/timeline.json.",
-  "lines": [
-    {"id": "v01", "text": "I woke up late."},
-    {"id": "v02", "text": "For a meeting that no longer mattered."},
-    {"id": "v03", "text": "At nine, the city was on time."},
-    {"id": "v04", "text": "The buses were on time."},
-    {"id": "v05", "text": "The lights were on time."},
-    {"id": "v06", "text": "Even the coffee was ready."},
-    {"id": "v07", "text": "There was just nobody left to be late."},
-    {"id": "v08", "text": "For the first time in my life,"},
-    {"id": "v09", "text": "I had nowhere to be."}
-  ]
+ "voice": "am_michael",
+ "note": "v2: only the hero's own spontaneous lines, no narration. Discovery happens with the viewer.",
+ "lines": [
+  {
+   "id": "v01",
+   "text": "Oh, shit. I'm late.",
+   "speed": 1.0
+  },
+  {
+   "id": "v02",
+   "text": "What the hell?",
+   "speed": 0.86,
+   "rise": {
+    "start": 0.6,
+    "semitones": 2.5
+   }
+  },
+  {
+   "id": "v03",
+   "text": "Hello?",
+   "speed": 0.9,
+   "rise": {
+    "start": 0.3,
+    "end": 0.8,
+    "semitones": 7
+   }
+  },
+  {
+   "id": "v04",
+   "text": "Anybody?",
+   "speed": 0.88,
+   "rise": {
+    "start": 0.42,
+    "end": 0.8,
+    "semitones": 8
+   }
+  },
+  {
+   "id": "v05",
+   "text": "Guess I'm not going to that meeting.",
+   "speed": 0.92
+  }
+ ]
 }

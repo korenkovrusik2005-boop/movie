@@ -1,59 +1,147 @@
 {
-  "title": "STILL OPEN — EP01 — 9:00 Meeting",
+  "title": "STILL OPEN \u2014 EP01 \u2014 9:00 Meeting (v2: discovery)",
   "fps": 60,
   "width": 1080,
   "height": 1920,
-  "duration": 62.5,
+  "duration": 63.6,
   "scenes": {
-    "s1_phone":   [0.0, 7.2],
-    "s2_window":  [7.2, 14.6],
-    "s3_avenue":  [14.6, 21.6],
-    "s4_bus":     [21.6, 29.6],
-    "s5_signal":  [29.6, 34.8],
-    "s6_cafe":    [34.8, 42.1],
-    "s7_roof":    [41.5, 52.0],
-    "s8_mom":     [52.0, 59.4],
-    "s9_end":     [59.4, 62.5]
+    "s1_phone": [
+      0.0,
+      7.5
+    ],
+    "s2_window": [
+      7.5,
+      18.5
+    ],
+    "s3_avenue": [
+      18.5,
+      24.5
+    ],
+    "s4_bus": [
+      24.5,
+      30.85
+    ],
+    "s5_signal": [
+      30.85,
+      33.8
+    ],
+    "s6_cafe": [
+      33.8,
+      39.0
+    ],
+    "s7_meeting": [
+      39.0,
+      43.5
+    ],
+    "s7_roof": [
+      43.5,
+      50.0
+    ],
+    "s8_mom": [
+      50.0,
+      54.4
+    ],
+    "s8_wide": [
+      54.4,
+      60.6
+    ],
+    "s9_end": [
+      60.6,
+      63.6
+    ]
   },
   "vo": [
-    {"id": "v01", "t": 2.10, "text": "I woke up late."},
-    {"id": "v02", "t": 3.90, "text": "For a meeting that no longer mattered."},
-    {"id": "v03", "t": 15.80, "text": "At nine, the city was on time."},
-    {"id": "v04", "t": 25.45, "text": "The buses were on time."},
-    {"id": "v05", "t": 31.30, "text": "The lights were on time."},
-    {"id": "v06", "t": 37.50, "text": "Even the coffee was ready."},
-    {"id": "v07", "t": 42.90, "text": "There was just nobody left to be late."},
-    {"id": "v08", "t": 46.70, "text": "For the first time in my life,"},
-    {"id": "v09", "t": 48.75, "text": "I had nowhere to be."}
+    {
+      "id": "v01",
+      "t": 4.55,
+      "text": "Oh, shit. I'm late."
+    },
+    {
+      "id": "v02",
+      "t": 15.9,
+      "text": "What the hell?"
+    },
+    {
+      "id": "v03",
+      "t": 21.25,
+      "text": "Hello?"
+    },
+    {
+      "id": "v04",
+      "t": 27.75,
+      "text": "Anybody?"
+    },
+    {
+      "id": "v05",
+      "t": 41.0,
+      "text": "Guess I'm not going to that meeting."
+    }
   ],
   "events": {
-    "buzz": [0.35, 1.15],
+    "buzz": [
+      0.35,
+      1.1,
+      1.85
+    ],
     "screen_wake": 0.35,
     "banner_in": 0.75,
-    "banner_swipe": 6.35,
-    "phone_lock": 6.74,
-    "curtain_open": 7.45,
-    "title_in": 9.6,
-    "title_out": 13.5,
-    "clock_flip": 16.05,
-    "avenue_light": 19.2,
-    "bus_arrive": 21.6,
-    "bus_stop": 24.15,
-    "bus_doors_open": 24.7,
-    "bus_doors_close": 27.45,
-    "bus_depart": 28.05,
-    "signal_green": 30.7,
-    "drop": 33.1,
-    "grind": [35.6, 36.8],
-    "pour": [36.9, 39.4],
-    "ready": 39.6,
-    "birds": 43.2,
-    "music_in": 41.6,
-    "music_out": 51.8,
-    "ping": 53.2,
-    "head_turn": 53.8,
-    "cloud": [55.0, 58.3],
-    "screen_dim": 58.55,
-    "end_card": 59.6
+    "grab": 3.95,
+    "whip": 6.05,
+    "hero_enter": 7.6,
+    "curtain_open": 9.0,
+    "wbus_arrive": 10.0,
+    "wbus_stop": 12.3,
+    "wbus_doors": 12.8,
+    "win_light": 14.2,
+    "hero_tilt": 14.6,
+    "clock_flip": 19.7,
+    "walk_pause": [
+      20.85,
+      22.25
+    ],
+    "avenue_light": 22.9,
+    "bus_arrive": 24.5,
+    "bus_stop": 26.2,
+    "bus_doors_open": 26.5,
+    "bus_doors_close": 28.9,
+    "bus_depart": 29.3,
+    "signal_green": 31.6,
+    "drop": 33.2,
+    "grind": [
+      34.6,
+      35.4
+    ],
+    "pour": [
+      35.5,
+      37.6
+    ],
+    "ready": 37.9,
+    "meet_swipe": 42.75,
+    "exhale": 44.4,
+    "birds": 45.0,
+    "music_in": 43.5,
+    "music_out": 50.3,
+    "screen_on": 50.55,
+    "thread_in": 50.95,
+    "call_tap": 53.0,
+    "call_screen": 53.25,
+    "rings": [
+      53.8,
+      56.8,
+      59.8
+    ],
+    "pullback": [
+      54.4,
+      60.5
+    ],
+    "cloud": [
+      55.2,
+      59.6
+    ],
+    "fade_black": [
+      59.95,
+      60.6
+    ],
+    "end_card": 60.9
   }
 }

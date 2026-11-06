@@ -6,7 +6,7 @@
 
 | Серия | Название | Длительность | Файл |
 |---|---|---|---|
-| 01 | 9:00 Meeting | 62.5 с | [`ep01/out/STILL_OPEN_EP01_9am_Meeting.mp4`](ep01/out/STILL_OPEN_EP01_9am_Meeting.mp4) |
+| 01 | 9:00 Meeting | 63.6 с | [`ep01/out/STILL_OPEN_EP01_9am_Meeting.mp4`](ep01/out/STILL_OPEN_EP01_9am_Meeting.mp4) |
 
 ## Структура
 

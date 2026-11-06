@@ -2,19 +2,20 @@
 
 Файл: `out/STILL_OPEN_EP01_9am_Meeting.mp4`, на всех площадках без водяных знаков.
 Слот по «Библии публикаций»: YouTube 18:30, Instagram 19:00, TikTok 20:00 по Осло.
+Упаковка тоже не раскрывает лор: только то, что знает герой в начале.
 
 ## YouTube Shorts
 Название:
 ```
-Everyone Disappeared. My 9:00 Meeting Didn't. 📱
+I Overslept My 9:00 Meeting. Where Is Everyone?
 ```
 Описание:
 ```
-Everyone is gone. The city still runs on time. And my phone still gets notifications.
+I woke up late for a meeting. The buses were running. The coffee was ready. Nobody was there.
 
-STILL OPEN is a short series by FoldShift. Each episode is one notification.
+STILL OPEN is a short series by FoldShift. Every episode starts with one notification.
 
-Who do you think sent the last message? Best theory shapes episode 2.
+Why didn't she pick up? Best theory shapes episode 2.
 
 Brands: want a character series like this for your product? hello@foldshift.eu
 
@@ -24,28 +25,27 @@ Sound & music: original, made by FoldShift.
 ```
 Закреплённый комментарий:
 ```
-Episode 2: which notification should arrive next? 👇
+What should his phone show him next? 👇
 ```
 
 ## Instagram Reels
 ```
-The buses are on time. The coffee is ready. Nobody is left.
-Then one message arrives. ❤️
+Late for a 9:00 meeting. The city is running on time. Nobody is in it.
 
-Send this to the person you always call when you get home.
+Send this to the person you always call when you get home ❤️
 
 #animation #shortfilm #storytime
 ```
 
 ## TikTok
 ```
-everyone disappeared but my phone still gets notifications 📱 ep 1 #animation #shortfilm #storytime
+overslept my 9am meeting… where is everyone? ep 1 #animation #shortfilm #storytime
 ```
 
 ## Обложка
-Кадр 56.5 с: телефон с баннером «Mom ❤️: call me when you get home». Запасной вариант — 15.5 с: силуэт посреди пустого проспекта.
+Кадр 52 с: переписка «Mom ❤️: call me when you get home». Запасной вариант — 21.3 с: силуэт посреди пустого проспекта.
 
 ## Тест названий
-- Тайна: `Everyone Disappeared. My 9:00 Meeting Didn't.`
-- Эмоция: `The Last Message I Got From Mom`
-- Мир: `The City Still Runs. Nobody Is Left.`
+- Боль: `I Overslept My 9:00 Meeting. Where Is Everyone?`
+- Тайна: `The Bus Opened Its Doors. Nobody Got On.`
+- Эмоция: `I Called My Mom. It Just Kept Ringing.`

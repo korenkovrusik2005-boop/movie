@@ -192,18 +192,32 @@ function heroBust(c, x, y, s, opt = {}) {
     heroBustPath(c, opt); c.fillStyle = rgb(opt.rim, opt.rimA == null ? .9 : opt.rimA); c.fill('nonzero'); c.restore();
   }
   heroBustPath(c, opt); c.fillStyle = rgb(opt.col || P.ink, opt.a == null ? 1 : opt.a); c.fill('nonzero');
+  if (opt.phoneArm) { // right arm raised, phone at the ear
+    const arm = () => { c.beginPath(); c.moveTo(.62, .12); c.quadraticCurveTo(1.12, .2, 1.02, -.12); c.quadraticCurveTo(.92, -.42, .52, -.62);
+      c.lineTo(.34, -.66); c.lineTo(.3, -.5); c.quadraticCurveTo(.62, -.36, .7, -.16); c.quadraticCurveTo(.74, .02, .5, .1); c.closePath(); };
+    if (opt.rim) { c.save(); c.translate(opt.rimDx || .035, opt.rimDy || -.02); arm(); c.fillStyle = rgb(opt.rim, opt.rimA == null ? .9 : opt.rimA); c.fill(); c.restore(); }
+    arm(); c.fillStyle = rgb(opt.col || P.ink, 1); c.fill();
+  }
   c.restore();
 }
-// tiny standing figure (height 1 unit), from behind, feet at origin
+// tiny standing / walking figure (height 1 unit), from behind, feet at origin
+// opt: walk (0..1 amplitude), phase (radians), head (-1..1 look left/right), rim (css color)
 function heroStanding(c, x, y, h, col, opt = {}) {
-  c.save(); c.translate(x, y); c.scale(h, h); c.beginPath();
-  c.ellipse(0, -0.925, 0.062, 0.074, 0, 0, TAU);
-  c.moveTo(-0.13, -0.80); c.quadraticCurveTo(0, -0.84, 0.13, -0.80);
-  c.lineTo(0.15, -0.5); c.lineTo(0.12, -0.46); c.lineTo(0.11, -0.02); c.lineTo(0.03, 0); c.lineTo(0.0, -0.44);
-  c.lineTo(-0.03, 0); c.lineTo(-0.11, -0.02); c.lineTo(-0.12, -0.46); c.lineTo(-0.15, -0.5); c.closePath();
-  c.fillStyle = col; c.fill();
-  if (opt.rim) { c.strokeStyle = opt.rim; c.lineWidth = 0.012; c.stroke(); }
-  c.restore();
+  const draw = (fill, dx) => {
+    const ph = opt.phase || 0, wk = opt.walk || 0, hd = opt.head || 0;
+    c.save(); c.translate(x, y); c.scale(h, h); c.translate(dx + wk * .012 * Math.sin(ph), -wk * .01 * Math.abs(Math.sin(ph))); c.fillStyle = fill;
+    for (const s of [-1, 1]) { // legs: from behind a stride reads as alternating lift
+      const lift = wk * .06 * Math.max(0, Math.sin(ph + (s > 0 ? Math.PI : 0)));
+      c.beginPath(); c.moveTo(s * .005, -.47); c.lineTo(s * .115, -.46); c.lineTo(s * .095, -lift); c.lineTo(s * .03, -lift); c.closePath(); c.fill();
+    }
+    c.beginPath(); c.moveTo(-.13, -.80); c.quadraticCurveTo(0, -.845, .13, -.80); c.lineTo(.15, -.5); c.lineTo(.12, -.44); c.lineTo(-.12, -.44); c.lineTo(-.15, -.5); c.closePath(); c.fill();
+    for (const s of [-1, 1]) { const sw = wk * .03 * Math.sin(ph) * s;
+      c.beginPath(); c.moveTo(s * .125, -.79); c.lineTo(s * .17, -.75); c.lineTo(s * (.165 + sw), -.47); c.lineTo(s * (.12 + sw), -.47); c.closePath(); c.fill(); }
+    c.beginPath(); c.ellipse(hd * .022, -.925, .062, .074, hd * .15, 0, TAU); c.fill();
+    c.restore();
+  };
+  if (opt.rim) draw(opt.rim, .012);
+  draw(col, 0);
 }
 function bird(c, x, y, s, ph, col) {
   const a = Math.sin(ph) * 0.9;
