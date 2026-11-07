@@ -43,7 +43,7 @@ overslept my 9am meeting… where is everyone? ep 1 #animation #shortfilm #story
 ```
 
 ## Обложка
-Кадр 52 с: переписка «Mom ❤️: call me when you get home». Запасной вариант — 21.3 с: силуэт посреди пустого проспекта.
+Кадр 50 с: переписка «Mom ❤️: call me when you get home» в руке. Запасные варианты: 4.6 с (глаза в шоке), 20.5 с (один посреди проспекта).
 
 ## Тест названий
 - Боль: `I Overslept My 9:00 Meeting. Where Is Everyone?`

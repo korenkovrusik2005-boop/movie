@@ -12,9 +12,12 @@
 
 ```
 ep01/
-  timeline.json        единый таймлайн: сцены, реплики, события (общий для картинки и звука)
-  storyboard.md        раскадровка: варианты по сценам и выбранные решения
-  build.sh             полная сборка: звук → кадры → MP4 (loudnorm -14 LUFS)
+  storyboard.md        раскадровка v3: 26 планов, эмоции, звук
+  build_v3.sh          сборка v3: звук → кадры → MP4 (loudnorm -14 LUFS)
+  keyframes/           сгенерированные кадры (raw), карты глубины, UI-слои, PROMPTS.md
+  film/                render.py (2.5D-рендер кадров), shots.json (монтажный лист)
+  audio/sound_v3.py    звук v3 (sfxlib.py — синтез и фоли)
+  timeline.json, build.sh  v2 (векторная версия)
   vo/                  script.json, gen_vo.py (Kokoro TTS), lines/*.wav, durations.json
   audio/sound.py       синтез эмбиента, foley, музыки, VO-дакинг, микс
   visual/
